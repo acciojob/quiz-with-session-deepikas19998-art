@@ -40,11 +40,23 @@
           input.type = "radio";
           input.name = `question-${i}`;
           input.value = choice;
-          if (userAnswers[i] === choice) input.checked = true;
+          if (userAnswers[i] === choice) {
+            input.checked = true;
+            input.setAttribute("checked", "true"); // ✅ explicit attribute for Cypress
+          }
 
           input.addEventListener("change", () => {
             userAnswers[i] = choice;
             sessionStorage.setItem("progress", JSON.stringify(userAnswers));
+
+            // Update checked attributes for all radios in this question
+            document.getElementsByName(`question-${i}`).forEach(radio => {
+              if (radio.checked) {
+                radio.setAttribute("checked", "true");
+              } else {
+                radio.removeAttribute("checked");
+              }
+            });
           });
 
           label.appendChild(input);
